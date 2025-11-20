@@ -9,6 +9,7 @@ import { syncUser } from "@/actions/user.actions";
 export default async function SignInSignOut(){
 		const user = await currentUser();
 		console.log("TYPE", typeof(user), user)
+		console.log("EMAIL", user?.emailAddresses[0].emailAddress.split("@")[0])
 
 		if (user) await syncUser();
 

@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "dob" DROP NOT NULL,
+ALTER COLUMN "costPerCigg" DROP NOT NULL,
+ALTER COLUMN "initDailyAvg" DROP NOT NULL,
+ALTER COLUMN "initLifeExpectancy" DROP NOT NULL;
