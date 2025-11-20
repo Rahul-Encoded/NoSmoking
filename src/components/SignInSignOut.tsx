@@ -1,4 +1,4 @@
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { UserIcon } from "lucide-react";
@@ -31,6 +31,7 @@ export default async function SignInSignOut(){
 					<SignOutButton>
 						<Button variant="default">Sign-out</Button>
 					</SignOutButton>
+					<UserButton></UserButton>
 			</>
 		):(
 			<SignInButton mode="modal">
