@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import DesktopNavbar from "./DesktopNavBar";
 
-async function Navbar(){
+export default async function Navbar(){
 
 	return(
 		<nav className='sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-50'>
@@ -23,5 +23,3 @@ async function Navbar(){
     </nav>
 	)
 }
-
-export default Navbar;
