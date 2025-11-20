@@ -3,10 +3,14 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { UserIcon } from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
+import { syncUser } from "@/actions/user.actions";
 
 
 export default async function SignInSignOut(){
 		const user = await currentUser();
+		console.log("TYPE", typeof(user), user)
+
+		if (user) await syncUser();
 
 
 	return(
