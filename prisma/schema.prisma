@@ -13,4 +13,38 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  username String @unique
+  clerkId String @unique
+  name String?
+  image String?
+  dob DateTime
+  costPerCigg Int
+  initDailyAvg Int
+  initLifeExpectancy DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  //Relationships
+  //1. Logs every failure instance
+  smokeLogs SmokeLogs[]
+  //2. Tracks the real-time streak and accumulated bonus time
+  habitState HabitState?
+}
+
+model SmokeLogs{
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  timestamp DateTime @default(now())
+  penaltyMinutes Int @default(11)
+  costSpent Int
+}
+
+model HabitState{
+  id String @id @default(cuid())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+}
