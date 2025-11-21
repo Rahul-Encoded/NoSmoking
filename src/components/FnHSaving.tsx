@@ -1,5 +1,6 @@
 import { Wallet } from "lucide-react";
 import Link from "next/link";
+import LinkButton from "./rahui/link-button";
 
 export default function FnHSaving() {
 
@@ -20,9 +21,7 @@ export default function FnHSaving() {
                 Every minute earned is a penny saved. <span className="bg-linear-to-r from-green-500 to-green-900 text-transparent bg-clip-text">QuitTrack</span> tracks your accumulating financial wins alongside your physical health recovery milestones.
             </p>
 
-            <Link href="#" className="inline-block px-12 py-4 text-lg font-bold text-secondary bg-linear-to-r from-green-500 to-green-900 rounded-xl shadow-2xl shadow-green-600/40 hover:bg-green-400 transition transform hover:scale-105 duration-500">
-                Ready to change your date?
-            </Link>
+            <LinkButton content="Ready to change your date?" link="/"></LinkButton>
         </section>
     )
 }
