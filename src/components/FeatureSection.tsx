@@ -1,4 +1,5 @@
 import { Clock, RefreshCw, MessageCircle } from "lucide-react";
+import SpotlightCard from "./SpotlightCard";
 
 export default function FeatureSection() {
 
@@ -10,7 +11,7 @@ export default function FeatureSection() {
 
             <div className="grid md:grid-cols-3 gap-12">
 
-                <div className="bg-card border border-border/50 p-8 rounded-2xl shadow-xl transition hover:shadow-red-500/20 hover:scale-[1.02] duration-300 group">
+                <SpotlightCard className="p-8 rounded-2xl shadow-xl transition hover:shadow-red-500/20 hover:scale-[1.02] duration-300 group" spotlightColor="rgba(239, 68, 68, 0.25)">
                     <div className="bg-linear-to-br from-red-500/10 to-red-900/10 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:from-red-500/20 group-hover:to-red-900/20 transition-colors">
                         <Clock className="w-8 h-8 text-red-600" />
                     </div>
@@ -18,9 +19,9 @@ export default function FeatureSection() {
                     <p className="text-muted-foreground leading-relaxed">
                         Log a smoke and watch your <span className="font-bold bg-linear-to-r from-green-500 to-green-900 text-transparent bg-clip-text">Life Expectancy Date</span> visibly rewind by 11 minutes. This is instant, high-friction loss aversion—the most powerful psychological motivator to stop.
                     </p>
-                </div>
+                </SpotlightCard>
 
-                <div className="bg-card border border-border/50 p-8 rounded-2xl shadow-xl transition hover:shadow-green-500/20 hover:scale-[1.02] duration-300 group">
+                <SpotlightCard className="p-8 rounded-2xl shadow-xl transition hover:shadow-green-500/20 hover:scale-[1.02] duration-300 group" spotlightColor="rgba(34, 197, 94, 0.25)">
                     <div className="bg-linear-to-br from-green-500/10 to-green-900/10 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:from-green-500/20 group-hover:to-green-900/20 transition-colors">
                         <RefreshCw className="w-8 h-8 text-green-600" />
                     </div>
@@ -28,9 +29,9 @@ export default function FeatureSection() {
                     <p className="text-muted-foreground leading-relaxed">
                         For every 24 hours of abstinence, you <span className="font-bold bg-linear-to-r from-green-500 to-green-900 text-transparent bg-clip-text">earn back 30 minutes</span> of Health Bonus time. Your goal shifts from avoiding to actively <span className="font-bold bg-linear-to-r from-green-500 to-green-900 text-transparent bg-clip-text">earning</span> a longer, healthier life.
                     </p>
-                </div>
+                </SpotlightCard>
 
-                <div className="bg-card border border-border/50 p-8 rounded-2xl shadow-xl transition hover:shadow-blue-500/20 hover:scale-[1.02] duration-300 group">
+                <SpotlightCard className="p-8 rounded-2xl shadow-xl transition hover:shadow-blue-500/20 hover:scale-[1.02] duration-300 group" spotlightColor="rgba(59, 130, 246, 0.25)">
                     <div className="bg-linear-to-br from-blue-500/10 to-blue-900/10 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:from-blue-500/20 group-hover:to-blue-900/20 transition-colors">
                         <MessageCircle className="w-8 h-8 text-blue-600" />
                     </div>
@@ -38,7 +39,7 @@ export default function FeatureSection() {
                     <p className="text-muted-foreground leading-relaxed">
                         During a craving, tap <span className="font-bold bg-linear-to-r from-green-500 to-green-900 text-transparent bg-clip-text">"Need Support"</span> to instantly receive short, motivational messages from other users. Break the cycle without public confession or pressure.
                     </p>
-                </div>
+                </SpotlightCard>
             </div>
         </section>
     )
