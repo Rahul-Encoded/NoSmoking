@@ -7,20 +7,18 @@ export async function syncUser() {
 		const { userId } = await auth();
 		const user = await currentUser()
 
-		console.log("USER", user);
-
 		if (!userId || !user) return;
 
-		const existingUser = await prisma.user.findUnique({
+		const dbUser = await prisma.user.upsert({
 			where: {
 				clerkId: userId,
 			},
-		});
-
-		if (existingUser) return existingUser;
-
-		const dbUser = await prisma.user.create({
-			data: {
+			update: {
+				name: `${user.firstName || ""} ${user.lastName || ""}`,
+				email: user.emailAddresses[0].emailAddress,
+				image: user.imageUrl,
+			},
+			create: {
 				clerkId: userId,
 				name: `${user.firstName || ""} ${user.lastName || ""}`,
 				username: user.username ?? user.emailAddresses[0].emailAddress.split("@")[0],
@@ -28,8 +26,6 @@ export async function syncUser() {
 				image: user.imageUrl,
 			},
 		});
-
-		console.log("DBUSER", dbUser);
 
 		return dbUser;
 
