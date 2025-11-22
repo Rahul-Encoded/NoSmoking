@@ -65,7 +65,7 @@ export async function dbUser() {
 
 }
 
-export async function updateUserData(date: Date, cost: number, dailyAvg: number, duration: number) {
+export async function updateUserData(date: Date, cost: number, dailyAvg: number, duration: number, location: string, physicalActivity: string, jobHours: number, dietQuality: string, eatingOutFrequency: string, sleepQuality: string) {
 	try {
 		const user = await dbUser();
 		const userId = user?.id;
@@ -81,6 +81,12 @@ export async function updateUserData(date: Date, cost: number, dailyAvg: number,
 				costPerCigg: cost,
 				initDailyAvg: dailyAvg,
 				duration: duration,
+				location: location,
+				physicalActivity: physicalActivity,
+				jobHours: jobHours,
+				dietQuality: dietQuality,
+				eatingOutFrequency: eatingOutFrequency,
+				sleepQuality: sleepQuality,
 			}
 		});
 
