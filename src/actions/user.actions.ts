@@ -64,15 +64,16 @@ export async function dbUser() {
 
 	if (!user) throw new Error("User Not found");
 
-	return user.id;
+	return user;
 
 
 }
 
 export async function updateUserData(date: Date, cost: number, dailyAvg: number, duration: number) {
 	try {
-		const userId = await dbUser();
-
+		const user = await dbUser();
+		const userId = user?.id;
+		console.log("USERID", userId);
 		if (!userId) return;
 
 		const update = await prisma.user.update({
