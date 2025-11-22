@@ -23,7 +23,7 @@ model User {
   dob DateTime?
   costPerCigg Int?
   initDailyAvg Int?
-  duration DateTime?
+  duration Int?
   initLifeExpectancy DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
