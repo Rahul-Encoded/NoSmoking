@@ -1,4 +1,5 @@
 import DashBoard from "@/components/DashBoard";
+import Form from "@/components/Form";
 import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Home() {
@@ -8,7 +9,7 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
 
-      {user ? (<></>) : (<DashBoard></DashBoard>)}
+      {user ? (<Form></Form>) : (<DashBoard></DashBoard>)}
 
     </div>
   );
