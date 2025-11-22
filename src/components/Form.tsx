@@ -22,13 +22,17 @@ export default function Form() {
         if (!date || !cost || !dailyAvg || !duration) return;
 
         setIsPosting(true);
+        console.log("Date", date);
 
         const costNum = Number(cost);
         const dailyAvgNum = Number(dailyAvg);
         const durationNum = Number(duration);
 
         try {
-            const result = await updateUserData(date, costNum, dailyAvgNum, durationNum);
+            const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            console.log("UTC Date", utcDate);
+
+            const result = await updateUserData(utcDate, costNum, dailyAvgNum, durationNum);
 
             if (result?.success) {
                 setIsPosting(false);
