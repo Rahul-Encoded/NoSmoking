@@ -20,7 +20,7 @@ model User {
   clerkId String @unique
   name String?
   image String?
-  dob DateTime?  @db.Date
+  dob DateTime? @db.Date
   costPerCigg Float?
   initDailyAvg Float?
   duration Float?
