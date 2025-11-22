@@ -65,7 +65,19 @@ export async function dbUser() {
 
 }
 
-export async function updateUserData(date: Date, cost: number, dailyAvg: number, duration: number, location: string, physicalActivity: string, jobHours: number, dietQuality: string, eatingOutFrequency: string, sleepQuality: string) {
+export async function updateUserData(data: {
+	date?: Date;
+	cost?: number;
+	dailyAvg?: number;
+	duration?: number;
+	location?: string;
+	physicalActivity?: string;
+	jobHours?: number;
+	dietQuality?: string;
+	eatingOutFrequency?: string;
+	sleepQuality?: string;
+	initLifeExpectancy?: number;
+}) {
 	try {
 		const user = await dbUser();
 		const userId = user?.id;
@@ -77,16 +89,17 @@ export async function updateUserData(date: Date, cost: number, dailyAvg: number,
 				id: userId,
 			},
 			data: {
-				dob: date,
-				costPerCigg: cost,
-				initDailyAvg: dailyAvg,
-				duration: duration,
-				location: location,
-				physicalActivity: physicalActivity,
-				jobHours: jobHours,
-				dietQuality: dietQuality,
-				eatingOutFrequency: eatingOutFrequency,
-				sleepQuality: sleepQuality,
+				dob: data.date,
+				costPerCigg: data.cost,
+				initDailyAvg: data.dailyAvg,
+				duration: data.duration,
+				location: data.location,
+				physicalActivity: data.physicalActivity,
+				jobHours: data.jobHours,
+				dietQuality: data.dietQuality,
+				eatingOutFrequency: data.eatingOutFrequency,
+				sleepQuality: data.sleepQuality,
+				initLifeExpectancy: data.initLifeExpectancy,
 			}
 		});
 
