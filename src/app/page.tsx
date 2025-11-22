@@ -13,7 +13,7 @@ export default async function Home() {
 
   if (!dbUser) return <LandingPage></LandingPage>
 
-  if (!dbUser.dob || !dbUser.costPerCigg || !dbUser.initDailyAvg) {
+  if (!dbUser.dob || !dbUser.costPerCigg || !dbUser.initDailyAvg || !dbUser.duration || !dbUser.location || !dbUser.physicalActivity || !dbUser.jobHours || !dbUser.dietQuality || !dbUser.eatingOutFrequency || !dbUser.sleepQuality) {
     redirect("/onboarding");
   }
 
