@@ -8,7 +8,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { updateUserData } from "@/actions/user.actions";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Form() {
 
@@ -18,6 +18,7 @@ export default function Form() {
     const [dailyAvg, setDailyAvg] = useState("");
     const [duration, setDuration] = useState("");
     const [isPosting, setIsPosting] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = async () => {
         if (!date || !cost || !dailyAvg || !duration) return;
@@ -38,7 +39,7 @@ export default function Form() {
             if (result?.success) {
                 setIsPosting(false);
                 toast.success("User data updated successfully");
-                redirect("/dashboard");
+                router.push("/dashboard");
             }
         } catch (error) {
             setIsPosting(false);
