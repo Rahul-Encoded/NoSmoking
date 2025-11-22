@@ -18,6 +18,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { updateLifeExpectancy } from "@/actions/llm.actions";
 
 export default function Form() {
     const [open, setOpen] = useState(false);
@@ -34,7 +35,8 @@ export default function Form() {
     const [isPosting, setIsPosting] = useState(false);
     const router = useRouter();
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!date || !cost || !dailyAvg || !duration) return;
 
         setIsPosting(true);
@@ -51,20 +53,30 @@ export default function Form() {
             );
             console.log("UTC Date", utcDate);
 
-            const result = await updateUserData(
-                utcDate,
-                costNum,
-                dailyAvgNum,
-                durationNum,
-                location,
-                physicalActivity,
-                jobHoursNum,
-                dietQuality,
-                eatingOutFrequency,
-                sleepQuality
-            );
+            const result1 = await updateUserData({
+                date: utcDate,
+                cost: costNum,
+                dailyAvg: dailyAvgNum,
+                duration: durationNum,
+                location: location,
+                physicalActivity: physicalActivity,
+                jobHours: jobHoursNum,
+                dietQuality: dietQuality,
+                eatingOutFrequency: eatingOutFrequency,
+                sleepQuality: sleepQuality
+            });
 
-            if (result?.success) {
+            const result2 = await updateLifeExpectancy({
+                dob: utcDate,
+                location: location,
+                physicalActivity: physicalActivity,
+                jobHours: jobHoursNum,
+                dietQuality: dietQuality,
+                eatingOutFrequency: eatingOutFrequency,
+                sleepQuality: sleepQuality
+            });
+
+            if (result1?.success && result2?.success) {
                 setIsPosting(false);
                 toast.success("User data updated successfully");
                 router.push("/dashboard");
