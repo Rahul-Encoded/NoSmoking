@@ -8,6 +8,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { updateUserData } from "@/actions/user.actions";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 export default function Form() {
 
@@ -37,6 +38,7 @@ export default function Form() {
             if (result?.success) {
                 setIsPosting(false);
                 toast.success("User data updated successfully");
+                redirect("/dashboard");
             }
         } catch (error) {
             setIsPosting(false);

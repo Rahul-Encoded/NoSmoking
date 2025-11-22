@@ -2,7 +2,7 @@ import FeatureSection from "./FeatureSection";
 import FnHSaving from "./FnHSaving";
 import HeroSection from "./HeroSection";
 
-export default function DashBoard() {
+export default function LandingPage() {
 
 	return (
 		<div className="flex-col">
