@@ -1,16 +1,22 @@
-import DashBoard from "@/components/DashBoard";
-import Form from "@/components/Form";
+import LandingPage from "@/components/LandingPage";
 import { currentUser } from "@clerk/nextjs/server";
+import { getUserByClerkId } from "@/actions/user.actions";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
 
   const user = await currentUser();
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
+  if (!user) return <LandingPage></LandingPage>
 
-      {user ? (<Form></Form>) : (<DashBoard></DashBoard>)}
+  const dbUser = await getUserByClerkId(user.id);
 
-    </div>
-  );
+  if (!dbUser) return <LandingPage></LandingPage>
+
+  if (!dbUser.dob || !dbUser.costPerCigg || !dbUser.initDailyAvg) {
+    redirect("/onboarding");
+  }
+
+  redirect("/dashboard");
+
 }
