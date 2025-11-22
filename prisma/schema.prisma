@@ -14,38 +14,44 @@ datasource db {
 }
 
 model User {
-  id String @id @default(cuid())
-  email String @unique
-  username String @unique
-  clerkId String @unique
-  name String?
-  image String?
-  dob DateTime? @db.Date
-  costPerCigg Float?
-  initDailyAvg Float?
-  duration Float?
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  username           String    @unique
+  clerkId            String    @unique
+  name               String?
+  image              String?
+  dob                DateTime? @db.Date
+  costPerCigg        Float?
+  initDailyAvg       Float?
+  duration           Float?
   initLifeExpectancy DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  location           String?
+  physicalActivity   String?
+  jobHours           Float?
+  dietQuality        String?
+  eatingOutFrequency String?
+  sleepQuality       String?
 
   //Relationships
   //1. Logs every failure instance
-  smokeLogs SmokeLogs[]
+  smokeLogs  SmokeLogs[]
   //2. Tracks the real-time streak and accumulated bonus time
   habitState HabitState?
 }
 
-model SmokeLogs{
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields: [userId], references: [id])
-  timestamp DateTime @default(now())
-  penaltyMinutes Int @default(11)
-  costSpent Int
+model SmokeLogs {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  timestamp      DateTime @default(now())
+  penaltyMinutes Int      @default(11)
+  costSpent      Int
 }
 
-model HabitState{
-  id String @id @default(cuid())
+model HabitState {
+  id     String @id @default(cuid())
   userId String @unique
-  user User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }
