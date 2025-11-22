@@ -24,7 +24,7 @@ model User {
   costPerCigg        Float?
   initDailyAvg       Float?
   duration           Float?
-  initLifeExpectancy DateTime?
+  initLifeExpectancy Float?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   location           String?
