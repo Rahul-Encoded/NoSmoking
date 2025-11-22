@@ -19,12 +19,6 @@ import {
 } from "@/components/ui/card"
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 
-export const description = "A radial chart with text"
-
-const chartData = [
-    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-]
-
 const chartConfig = {
     visitors: {
         label: "Visitors",
@@ -36,10 +30,11 @@ const chartConfig = {
 } satisfies ChartConfig
 
 interface chartProps {
+    data: number;
     footerText: string;
 }
 
-export function ChartRadialText({ footerText }: chartProps) {
+export function ChartRadialText({ data, footerText }: chartProps) {
     return (
         <Card className="flex flex-col bg-background border-none">
 
@@ -49,7 +44,7 @@ export function ChartRadialText({ footerText }: chartProps) {
                     className="mx-auto aspect-square max-h-[250px]"
                 >
                     <RadialBarChart
-                        data={chartData}
+                        data={[data]}
                         startAngle={0}
                         endAngle={250}
                         innerRadius={80}
@@ -79,7 +74,7 @@ export function ChartRadialText({ footerText }: chartProps) {
                                                     y={viewBox.cy}
                                                     className="fill-foreground text-4xl font-bold"
                                                 >
-                                                    {chartData[0].visitors.toLocaleString()}
+                                                    {data.toLocaleString()}
                                                 </tspan>
                                                 <tspan
                                                     x={viewBox.cx}
