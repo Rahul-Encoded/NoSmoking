@@ -2,7 +2,7 @@ import { dbUser } from "@/actions/user.actions";
 import Buttons from "@/components/Buttons";
 import { ChartCarousel } from "@/components/rahui/chart-carousel";
 import { redirect } from "next/navigation";
-import { checkAndBackfillLogs, getSmokeCount, getSmokeHistory } from "@/actions/smoke.action";
+import { checkAndBackfillLogs, getSmokeCount, getSmokeHistory } from "@/actions/smoke.actions";
 import DashboardCalendar from "@/components/DashboardCalendar";
 import {
     Card,
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
 
 
     return (
-        <div className="flex min-h-screen flex-col p-8 md:p-12 space-y-8">
+        <div className="flex min-h-screen flex-col p-4 sm:p-6 md:p-8 lg:p-12 space-y-6 md:space-y-8">
             <div className="flex flex-col space-y-2">
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                 <p className="text-muted-foreground">
@@ -123,8 +123,8 @@ export default async function DashboardPage() {
                 </Card>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
+            <div className="grid gap-4 lg:grid-cols-7">
+                <Card className="lg:col-span-4">
                     <CardHeader>
                         <CardTitle>Life Expectancy Impact</CardTitle>
                         <CardDescription>
@@ -135,7 +135,7 @@ export default async function DashboardPage() {
                         <ChartCarousel data={data} headerText={headerText} footerText={footerText} color={color} />
                     </CardContent>
                 </Card>
-                <Card className="col-span-3">
+                <Card className="lg:col-span-3">
                     <CardHeader>
                         <CardTitle>Smoking Calendar</CardTitle>
                         <CardDescription>
