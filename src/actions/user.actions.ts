@@ -78,6 +78,7 @@ export async function updateUserData(data: {
 	sleepQuality?: string;
 	initLifeExpectancy?: number;
 	currLifeExpectancy?: number;
+	totalSmokes?: number;
 }) {
 	try {
 		const user = await dbUser();
@@ -101,7 +102,7 @@ export async function updateUserData(data: {
 				eatingOutFrequency: data.eatingOutFrequency,
 				sleepQuality: data.sleepQuality,
 				initLifeExpectancy: data.initLifeExpectancy,
-				currLifeExpectancy: data.currLifeExpectancy,
+				totalSmokes: data.totalSmokes,
 			}
 		});
 

@@ -1,4 +1,4 @@
-import { dbUser } from "@/actions/user.actions";
+import { dbUser, updateUserData } from "@/actions/user.actions";
 import Buttons from "@/components/Buttons";
 import { ChartCarousel } from "@/components/rahui/chart-carousel";
 import { Button } from "@/components/ui/button";
@@ -12,12 +12,18 @@ export default async function DashboardPage() {
         redirect("/sign-in");
     }
 
-    const { name: name, initLifeExpectancy: initLifeExpectancy, duration: duration, initDailyAvg: initDailyAvg } = user;
+    const { name: name, initLifeExpectancy: initLifeExpectancy, duration: duration, initDailyAvg: initDailyAvg, costPerCigg: costPerCigg } = user;
 
     const initLifeExpectancyInMin = ((initLifeExpectancy || 0) * 365 * 24 * 60 * 60);
-    const currLifeExpectancyInMin = (initLifeExpectancyInMin - ((duration || 0) * (initDailyAvg || 0) * 11));
+    const currLifeExpectancyInMin = (initLifeExpectancyInMin - ((duration || 0) * (initDailyAvg || 0) * 11 * 12 * 30));
     const currLifeExpectancyInYears = (currLifeExpectancyInMin / (365 * 24 * 60 * 60));
     const lostTime = (initLifeExpectancyInMin - currLifeExpectancyInMin);
+    const totalSmokes = ((duration || 0) * 12 * 30) * (initDailyAvg || 0);
+    console.log("total smokes", totalSmokes)
+    const cost = totalSmokes * (costPerCigg || 0);
+
+    const update = await updateUserData({ totalSmokes: totalSmokes });
+    console.log(update);
 
     const data = [initLifeExpectancyInMin, currLifeExpectancyInMin];
     const headerText = ["Initial Life Expectancy", "Current Life Expectancy"];
@@ -31,7 +37,7 @@ export default async function DashboardPage() {
                 <p className="text-xl">Welcome back, {name?.trim() || "User"}!</p>
                 <p className="text-muted-foreground mt-2">Your quit journey stats will appear here.</p>
             </div>
-            <h3 className="text-center text-2xl font-light mb-10">You have <span className="bg-linear-to-r from-red-500 to-red-900 text-transparent bg-clip-text">lost {lostTime} minutes</span> </h3>
+            <h3 className="text-center text-2xl font-light mb-10">You have <span className="bg-linear-to-r from-red-500 to-red-900 text-transparent bg-clip-text">lost {lostTime} minutes & {cost} rupees</span> </h3>
             <div className="flex justify-center items-center mb-10">
                 <ChartCarousel data={data} headerText={headerText} footerText={footerText} color={color} />
             </div>
