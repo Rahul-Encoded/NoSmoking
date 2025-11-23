@@ -317,3 +317,60 @@ export async function updateDailyStatus(date: Date, status: 'smoked' | 'not-smok
         return { success: false, error };
     }
 }
+
+export async function backfillHistoricalSmokeLogs(durationInYears: number, dailyAvg: number) {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+        // Calculate the start date based on duration
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const startDate = new Date(today);
+        // Convert years to days and subtract from today
+        const daysToSubtract = Math.floor(durationInYears * 365);
+        startDate.setDate(today.getDate() - daysToSubtract);
+        startDate.setHours(0, 0, 0, 0);
+
+        console.log(`Backfilling smoke logs from ${startDate.toDateString()} to ${today.toDateString()}`);
+
+        // Create smoke logs for each day based on daily average
+        const smokeLogs = [];
+        const currentDate = new Date(startDate);
+
+        while (currentDate < today) {
+            // For each day, create entries based on dailyAvg
+            // We'll create one log per day at the start of the day for simplicity
+            // The actual count is tracked by dailyAvg in calculations
+            const logTimestamp = new Date(currentDate);
+            logTimestamp.setHours(12, 0, 0, 0); // Set to noon for consistency
+
+            smokeLogs.push({
+                userId: userId,
+                timestamp: logTimestamp,
+            });
+
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        // Batch create all smoke logs
+        if (smokeLogs.length > 0) {
+            await prisma.smokeLogs.createMany({
+                data: smokeLogs,
+                skipDuplicates: true, // Skip if logs already exist for these timestamps
+            });
+            console.log(`Created ${smokeLogs.length} historical smoke logs`);
+        }
+
+        return { success: true, count: smokeLogs.length };
+    } catch (error) {
+        console.error("Error in backfillHistoricalSmokeLogs", error);
+        return { success: false, error };
+    }
+}
+
