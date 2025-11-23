@@ -3,7 +3,8 @@ import Buttons from "@/components/Buttons";
 import { ChartCarousel } from "@/components/rahui/chart-carousel";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
-import { checkAndBackfillLogs, getSmokeCount } from "@/actions/smoke.action";
+import { checkAndBackfillLogs, getSmokeCount, getSmokeHistory } from "@/actions/smoke.action";
+import DashboardCalendar from "@/components/DashboardCalendar";
 
 
 export default async function DashboardPage() {
@@ -20,6 +21,9 @@ export default async function DashboardPage() {
 
     // Fetch real-time smoke count
     const loggedSmokes = await getSmokeCount();
+
+    // Fetch smoke history for calendar
+    const smokeHistory = await getSmokeHistory();
 
     // Calculate historical smokes (before app usage)
     // Assuming duration is in years, and 30 days/month
@@ -50,8 +54,9 @@ export default async function DashboardPage() {
                 <p className="text-muted-foreground mt-2">Your quit journey stats will appear here.</p>
             </div>
             <h3 className="text-center text-2xl font-light mb-10">You have <span className="bg-linear-to-r from-red-500 to-red-900 text-transparent bg-clip-text">lost {lostTimeInMinutes} minutes & {cost} rupees</span> </h3>
-            <div className="flex justify-center items-center mb-10">
+            <div className="flex justify-center items-center mb-10 gap-10 flex-wrap">
                 <ChartCarousel data={data} headerText={headerText} footerText={footerText} color={color} />
+                <DashboardCalendar smokedDates={smokeHistory.smokedDates} notSmokedDates={smokeHistory.notSmokedDates} />
             </div>
             <Buttons />
         </div>
