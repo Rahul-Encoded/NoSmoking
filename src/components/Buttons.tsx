@@ -1,6 +1,6 @@
 "use client";
 import { dbUser, smoked } from "@/actions/user.actions";
-import { logNoSmoke, logSmoke, getDailyLogStatus } from "@/actions/smoke.action";
+import { logNoSmoke, logSmoke, getDailyLogStatus } from "@/actions/smoke.actions";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";

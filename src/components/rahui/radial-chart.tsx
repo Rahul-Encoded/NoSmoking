@@ -44,27 +44,27 @@ export function ChartRadialText({ data, headerText, footerText, color }: chartPr
     return (
         <Card className="flex flex-col bg-background border-none">
             <CardHeader>
-                <CardTitle className={`text-center text-3xl font-extralight bg-linear-to-r from-${color}-500 to-${color}-900 text-transparent bg-clip-text`}>{headerText}</CardTitle>
+                <CardTitle className={`text-center text-xl sm:text-2xl md:text-3xl font-extralight bg-linear-to-r from-${color}-500 to-${color}-900 text-transparent bg-clip-text`}>{headerText}</CardTitle>
             </CardHeader>
 
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square max-h-[400px]"
+                    className="mx-auto aspect-square max-h-[250px] sm:max-h-[300px] md:max-h-[400px]"
                 >
                     <RadialBarChart
                         data={chartData}
                         startAngle={0}
                         endAngle={250}
-                        innerRadius={160}
-                        outerRadius={190}
+                        innerRadius="80%"
+                        outerRadius="100%"
                     >
                         <PolarGrid
                             gridType="circle"
                             radialLines={false}
                             stroke="none"
                             className="first:fill-muted last:fill-background"
-                            polarRadius={[166, 154]}
+                            polarRadius={[86, 74]}
                         />
                         <RadialBar dataKey="visitors" background cornerRadius={10} />
                         <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
@@ -81,7 +81,7 @@ export function ChartRadialText({ data, headerText, footerText, color }: chartPr
                                                 <tspan
                                                     x={viewBox.cx}
                                                     y={viewBox.cy}
-                                                    className="fill-foreground text-4xl font-bold"
+                                                    className="fill-foreground text-2xl sm:text-3xl md:text-4xl font-bold"
                                                 >
                                                     {data.toLocaleString()}
                                                 </tspan>

@@ -10,7 +10,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { updateDailyStatus } from "@/actions/smoke.action";
+import { updateDailyStatus } from "@/actions/smoke.actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

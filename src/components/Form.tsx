@@ -19,7 +19,7 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { updateLifeExpectancy } from "@/actions/llm.actions";
-import { backfillHistoricalSmokeLogs } from "@/actions/smoke.action";
+import { backfillHistoricalSmokeLogs } from "@/actions/smoke.actions";
 import { MultiStepLoader } from "./ui/multi-step-loader";
 
 export default function Form() {
@@ -107,7 +107,7 @@ export default function Form() {
     };
 
     return (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md px-4 sm:px-0">
             <MultiStepLoader isLoading={isPosting} />
             <form>
                 <FieldGroup>
@@ -122,7 +122,7 @@ export default function Form() {
                                     <Button
                                         variant="outline"
                                         id="date"
-                                        className="w-48 justify-between font-normal"
+                                        className="w-full sm:w-48 justify-between font-normal"
                                         disabled={isPosting}
                                     >
                                         {date ? date.toLocaleDateString() : "Select date"}
@@ -168,14 +168,14 @@ export default function Form() {
 
                         <Field>
                             <FieldLabel htmlFor="duration">You have been smoking since</FieldLabel>
-                            <div className="flex gap-2 items-center">
+                            <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                                 {/* Years Dropdown */}
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="w-32 justify-between font-normal"
+                                            className="w-full sm:w-32 justify-between font-normal"
                                             disabled={isPosting}
                                         >
                                             {durationYears || "0"} Years
@@ -277,7 +277,7 @@ export default function Form() {
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-56 justify-between font-normal"
+                                        className="w-full sm:w-56 justify-between font-normal"
                                         disabled={isPosting}
                                     >
                                         {physicalActivity || "Select activity level"}
@@ -326,7 +326,7 @@ export default function Form() {
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-56 justify-between font-normal"
+                                        className="w-full sm:w-56 justify-between font-normal"
                                         disabled={isPosting}
                                     >
                                         {dietQuality || "Select diet quality"}
@@ -367,7 +367,7 @@ export default function Form() {
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-56 justify-between font-normal"
+                                        className="w-full sm:w-56 justify-between font-normal"
                                         disabled={isPosting}
                                     >
                                         {eatingOutFrequency || "Select frequency"}
@@ -402,7 +402,7 @@ export default function Form() {
                             <FieldLabel htmlFor="sleepQuality">Sleep Quality</FieldLabel>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button type="button" variant="outline" className="w-56 justify-between font-normal" disabled={isPosting}>
+                                    <Button type="button" variant="outline" className="w-full sm:w-56 justify-between font-normal" disabled={isPosting}>
                                         {sleepQuality || "Select sleep quality"}
                                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                                     </Button>
