@@ -21,12 +21,14 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 
 interface chartProps {
     data: number;
+    headerText: string
     footerText: string;
+    color: string;
 }
 
-export function ChartRadialText({ data, footerText }: chartProps) {
+export function ChartRadialText({ data, headerText, footerText, color }: chartProps) {
 
-    const chartData = [{ browser: "Safari", visitors: data, fill: "var(--color-safari)" }]
+    const chartData = [{ browser: "Safari", visitors: data, fill: color }]
 
     const chartConfig = {
         visitors: {
@@ -34,13 +36,16 @@ export function ChartRadialText({ data, footerText }: chartProps) {
         },
         safari: {
             label: "Safari",
-            color: "var(--chart-2)",
+            color: color,
         },
     } satisfies ChartConfig
 
 
     return (
         <Card className="flex flex-col bg-background border-none">
+            <CardHeader>
+                <CardTitle className={`text-center text-3xl font-extralight bg-linear-to-r from-${color}-500 to-${color}-900 text-transparent bg-clip-text`}>{headerText}</CardTitle>
+            </CardHeader>
 
             <CardContent className="flex-1 pb-0">
                 <ChartContainer

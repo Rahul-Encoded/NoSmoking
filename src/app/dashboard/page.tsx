@@ -1,5 +1,7 @@
 import { dbUser } from "@/actions/user.actions";
-import { ChartRadialText } from "@/components/rahui/radial-chart";
+import Buttons from "@/components/Buttons";
+import { ChartCarousel } from "@/components/rahui/chart-carousel";
+import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 
 
@@ -15,6 +17,13 @@ export default async function DashboardPage() {
     const initLifeExpectancyInMin = ((initLifeExpectancy || 0) * 365 * 24 * 60 * 60);
     const currLifeExpectancyInMin = (initLifeExpectancyInMin - ((duration || 0) * (initDailyAvg || 0) * 11));
     const currLifeExpectancyInYears = (currLifeExpectancyInMin / (365 * 24 * 60 * 60));
+    const lostTime = (initLifeExpectancyInMin - currLifeExpectancyInMin);
+
+    const data = [initLifeExpectancyInMin, currLifeExpectancyInMin];
+    const headerText = ["Initial Life Expectancy", "Current Life Expectancy"];
+    const footerText = ["This is your estimated life date if you had not smoked.", "This is your estimated life date based on your smoking habit."];
+    const color = ["green", "red"];
+
 
     return (
         <div className="flex min-h-screen flex-col p-20">
@@ -22,16 +31,11 @@ export default async function DashboardPage() {
                 <p className="text-xl">Welcome back, {name?.trim() || "User"}!</p>
                 <p className="text-muted-foreground mt-2">Your quit journey stats will appear here.</p>
             </div>
-            <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center mx-10">
-                    <h1 className="text-4xl font-bold mb-4">Estimated Life: {initLifeExpectancy} years</h1>
-                    <ChartRadialText data={initLifeExpectancyInMin || 0} footerText="This is your estimated life date if you had not smoked." />
-                </div>
-                <div className="flex flex-col justify-center items-center mx-10">
-                    <h1 className="text-4xl font-bold mb-4">Current Life</h1>
-                    <ChartRadialText data={currLifeExpectancyInMin || 0} footerText="This is your estimated life date based on your smoking habit." />
-                </div>
+            <h3 className="text-center text-2xl font-light mb-10">You have <span className="bg-linear-to-r from-red-500 to-red-900 text-transparent bg-clip-text">lost {lostTime} minutes</span> </h3>
+            <div className="flex justify-center items-center mb-10">
+                <ChartCarousel data={data} headerText={headerText} footerText={footerText} color={color} />
             </div>
+            <Buttons />
         </div>
     );
 }
