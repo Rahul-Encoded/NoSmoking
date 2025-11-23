@@ -10,6 +10,8 @@ export default function Buttons() {
     const [hasSmoked, setHasSmoked] = useState(false);
     const [hasLoggedNoSmoke, setHasLoggedNoSmoke] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isSmokedLoading, setIsSmokedLoading] = useState(false);
+    const [isNoSmokeLoading, setIsNoSmokeLoading] = useState(false);
     const router = useRouter();
 
     const fetchStatus = async () => {
@@ -29,6 +31,7 @@ export default function Buttons() {
     }, []);
 
     const handleSmoked = async () => {
+        setIsSmokedLoading(true);
         try {
             const smokedData = await smoked();
             const smokeLog = await logSmoke();
@@ -43,10 +46,13 @@ export default function Buttons() {
         } catch (error) {
             console.error("Error in handleSmoked", error);
             toast.error("Failed to update smoked data");
+        } finally {
+            setIsSmokedLoading(false);
         }
     }
 
     const handleNoSmoked = async () => {
+        setIsNoSmokeLoading(true);
         try {
             const nonSmokeLog = await logNoSmoke();
 
@@ -60,6 +66,8 @@ export default function Buttons() {
         } catch (error) {
             console.error("Error in handleNoSmoked", error);
             toast.error("Failed to update no smoking data");
+        } finally {
+            setIsNoSmokeLoading(false);
         }
     }
 
@@ -70,16 +78,17 @@ export default function Buttons() {
                 variant="outline"
                 className="mx-10 bg-linear-to-r from-red-500 to-red-900 hover:scale-110"
                 onClick={handleSmoked}
+                disabled={isSmokedLoading || isNoSmokeLoading || loading}
             >
-                L👎🏻 I smoked
+                {isSmokedLoading ? "Loading..." : "L👎🏻 I smoked"}
             </Button>
             <Button
                 variant="default"
                 className="mx-10 bg-linear-to-r from-green-500 to-green-900 hover:scale-110"
                 onClick={handleNoSmoked}
-                disabled={hasSmoked || hasLoggedNoSmoke || loading}
+                disabled={hasSmoked || hasLoggedNoSmoke || loading || isSmokedLoading || isNoSmokeLoading}
             >
-                W🤙🏻 I didn't
+                {isNoSmokeLoading ? "Loading..." : "W🤙🏻 I didn't"}
             </Button>
         </div>
     )
