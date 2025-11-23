@@ -37,9 +37,9 @@ model User {
 
   //Relationships
   //1. Logs every failure instance
-  smokeLogs  SmokeLogs[]
+  smokeLogs    SmokeLogs[]
   //2. Tracks the real-time streak and accumulated bonus time
-  habitState HabitState?
+  nonSmokeLogs NonSmokeLogs[]
 }
 
 model SmokeLogs {
@@ -49,8 +49,9 @@ model SmokeLogs {
   timestamp DateTime @default(now())
 }
 
-model HabitState {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+model NonSmokeLogs {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  timestamp DateTime @default(now())
 }
