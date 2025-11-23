@@ -112,3 +112,23 @@ export async function updateUserData(data: {
 		return { success: false, error }
 	}
 }
+
+export async function smoked() {
+	try {
+		const user = await dbUser();
+		const userId = user?.id;
+		if (!userId) return;
+		const update = await prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				totalSmokes: user?.totalSmokes ? user?.totalSmokes + 1 : 1
+			}
+		});
+		return { success: true, update };
+	} catch (error) {
+		console.error("Error in smoked", error);
+		return { success: false, error }
+	}
+}
