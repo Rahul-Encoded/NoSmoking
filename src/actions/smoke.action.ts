@@ -256,3 +256,64 @@ export async function getSmokeHistory() {
         return { smokedDates: [], notSmokedDates: [] };
     }
 }
+
+export async function updateDailyStatus(date: Date, status: 'smoked' | 'not-smoked') {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        // Helper to delete logs for the day
+        const deleteLogs = async () => {
+            await prisma.smokeLogs.deleteMany({
+                where: {
+                    userId: userId,
+                    timestamp: {
+                        gte: startOfDay,
+                        lte: endOfDay,
+                    },
+                },
+            });
+            await prisma.nonSmokeLogs.deleteMany({
+                where: {
+                    userId: userId,
+                    timestamp: {
+                        gte: startOfDay,
+                        lte: endOfDay,
+                    },
+                },
+            });
+        };
+
+        if (status === 'smoked') {
+            await deleteLogs();
+            await prisma.smokeLogs.create({
+                data: {
+                    userId: userId,
+                    timestamp: startOfDay, // Log at start of day for simplicity in history
+                },
+            });
+        } else if (status === 'not-smoked') {
+            await deleteLogs();
+            await prisma.nonSmokeLogs.create({
+                data: {
+                    userId: userId,
+                    timestamp: startOfDay,
+                },
+            });
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error in updateDailyStatus", error);
+        return { success: false, error };
+    }
+}
