@@ -1,12 +1,12 @@
 "use server";
 
 import { GoogleGenAI } from '@google/genai';
-import { dbUser, updateUserData } from './user.actions';
+import { updateUserData } from './user.actions';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-export async function updateLifeExpectancy(data: {
+export async function updateLifeExpectancy({ dob, location, physicalActivity, jobHours, dietQuality, eatingOutFrequency, sleepQuality }: {
     dob: Date;
     location: string;
     physicalActivity: string;
@@ -15,7 +15,6 @@ export async function updateLifeExpectancy(data: {
     eatingOutFrequency: string;
     sleepQuality: string;
 }) {
-    const { dob, location, physicalActivity, jobHours, dietQuality, eatingOutFrequency, sleepQuality } = data;
 
     const prompt = `User's details: 
     DOB: ${dob}
@@ -33,7 +32,7 @@ export async function updateLifeExpectancy(data: {
             contents: prompt,
         });
 
-        if (!response || !response.text) return;
+        if (!response) return;
 
         const lifeExpectancy = Number(response.text);
         const update = await updateUserData({ initLifeExpectancy: lifeExpectancy });
