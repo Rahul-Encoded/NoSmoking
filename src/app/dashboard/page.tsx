@@ -47,13 +47,23 @@ export default async function DashboardPage() {
     const lostTimeInDays = (lostTimeInMinutes / (60 * 24)).toFixed(1);
 
 
-    const initLifeExpectancyInMin = ((initLifeExpectancy || 0) * 365 * 24 * 60 * 60);
+
+    const initLifeExpectancyInMin = ((initLifeExpectancy || 0) * 365 * 24 * 60);
     // Current life expectancy = Initial - Lost Time
     const currLifeExpectancyInMin = initLifeExpectancyInMin - lostTimeInMinutes;
 
+    // Convert to years for display
+    const currLifeExpectancyInYears = ((currLifeExpectancyInMin / (60 * 24 * 365))).toFixed(1);
+
     const data = [initLifeExpectancyInMin, currLifeExpectancyInMin];
-    const headerText = ["Initial Life Expectancy", "Current Life Expectancy"];
-    const footerText = ["This is your estimated life date if you had not smoked.", "This is your estimated life date based on your smoking habit."];
+    const headerText = [
+        `Initial Life Expectancy (${initLifeExpectancy} years)`,
+        `Current Life Expectancy (${currLifeExpectancyInYears} years)`
+    ];
+    const footerText = [
+        "This is your estimated life date if you had not smoked.",
+        "This is your estimated life date based on your smoking habit."
+    ];
     const color = ["green", "red"];
 
 
