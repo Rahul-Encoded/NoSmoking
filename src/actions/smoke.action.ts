@@ -12,6 +12,30 @@ export async function logSmoke() {
             throw new Error("User not found");
         }
 
+        // Check if there's a non-smoke log for today and delete it if it exists
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const existingNonSmokeLog = await prisma.nonSmokeLogs.findFirst({
+            where: {
+                userId: userId,
+                timestamp: {
+                    gte: startOfDay,
+                    lte: endOfDay,
+                },
+            },
+        });
+
+        if (existingNonSmokeLog) {
+            await prisma.nonSmokeLogs.delete({
+                where: {
+                    id: existingNonSmokeLog.id,
+                },
+            });
+        }
+
         const smokeLog = await prisma.smokeLogs.create({
             data: {
                 userId: userId,
@@ -22,5 +46,183 @@ export async function logSmoke() {
     } catch (error) {
         console.error("Error in logSmoke", error);
         return { success: false, error };
+    }
+}
+
+export async function logNoSmoke() {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+        // Check if already smoked today
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const existingSmokeLog = await prisma.smokeLogs.findFirst({
+            where: {
+                userId: userId,
+                timestamp: {
+                    gte: startOfDay,
+                    lte: endOfDay,
+                },
+            },
+        });
+
+        if (existingSmokeLog) {
+            return { success: false, error: "Already smoked today" };
+        }
+
+        const nonSmokeLog = await prisma.nonSmokeLogs.create({
+            data: {
+                userId: userId,
+            },
+        });
+
+        return { success: true, nonSmokeLog };
+    } catch (error) {
+        console.error("Error in logNoSmoke", error);
+        return { success: false, error };
+    }
+}
+
+export async function getDailyLogStatus() {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            return { hasSmoked: false, hasLoggedNoSmoke: false };
+        }
+
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const [smokeLog, nonSmokeLog] = await Promise.all([
+            prisma.smokeLogs.findFirst({
+                where: {
+                    userId: userId,
+                    timestamp: {
+                        gte: startOfDay,
+                        lte: endOfDay,
+                    },
+                },
+            }),
+            prisma.nonSmokeLogs.findFirst({
+                where: {
+                    userId: userId,
+                    timestamp: {
+                        gte: startOfDay,
+                        lte: endOfDay,
+                    },
+                },
+            }),
+        ]);
+
+        return {
+            hasSmoked: !!smokeLog,
+            hasLoggedNoSmoke: !!nonSmokeLog,
+        };
+    } catch (error) {
+        console.error("Error in getDailyLogStatus", error);
+        return { hasSmoked: false, hasLoggedNoSmoke: false };
+    }
+}
+
+export async function checkAndBackfillLogs() {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            return;
+        }
+
+        // Get the user's creation date or the last logged date
+        // For simplicity, let's look at the last 30 days max to avoid huge loops on old inactive accounts
+        // or start from user creation date if it's recent.
+        // Actually, let's just check the last few days for now or since the last known log.
+
+        // Strategy: Find the last recorded log (smoke or non-smoke). 
+        // Iterate from that day + 1 until yesterday.
+        // If no log exists for a day, create a non-smoke log.
+
+        // Optimization: Just check the last 7 days for now to be safe and fast.
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let i = 1; i <= 7; i++) {
+            const checkDate = new Date(today);
+            checkDate.setDate(today.getDate() - i);
+
+            const startOfCheckDate = new Date(checkDate);
+            startOfCheckDate.setHours(0, 0, 0, 0);
+            const endOfCheckDate = new Date(checkDate);
+            endOfCheckDate.setHours(23, 59, 59, 999);
+
+            const [smokeLog, nonSmokeLog] = await Promise.all([
+                prisma.smokeLogs.findFirst({
+                    where: {
+                        userId: userId,
+                        timestamp: {
+                            gte: startOfCheckDate,
+                            lte: endOfCheckDate,
+                        },
+                    },
+                }),
+                prisma.nonSmokeLogs.findFirst({
+                    where: {
+                        userId: userId,
+                        timestamp: {
+                            gte: startOfCheckDate,
+                            lte: endOfCheckDate,
+                        },
+                    },
+                }),
+            ]);
+
+            if (!smokeLog && !nonSmokeLog) {
+                // No logs for this day, so they didn't smoke. Backfill.
+                await prisma.nonSmokeLogs.create({
+                    data: {
+                        userId: userId,
+                        timestamp: startOfCheckDate, // Set timestamp to that day
+                    },
+                });
+                console.log(`Backfilled non-smoke log for ${startOfCheckDate.toDateString()}`);
+            }
+        }
+
+    } catch (error) {
+        console.error("Error in checkAndBackfillLogs", error);
+    }
+}
+
+export async function getSmokeCount() {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            return 0;
+        }
+
+        const count = await prisma.smokeLogs.count({
+            where: {
+                userId: userId,
+            },
+        });
+
+        return count;
+    } catch (error) {
+        console.error("Error in getSmokeCount", error);
+        return 0;
     }
 }
