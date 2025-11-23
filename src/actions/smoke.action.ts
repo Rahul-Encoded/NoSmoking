@@ -226,3 +226,33 @@ export async function getSmokeCount() {
         return 0;
     }
 }
+
+export async function getSmokeHistory() {
+    try {
+        const user = await dbUser();
+        const userId = user?.id;
+
+        if (!userId) {
+            return { smokedDates: [], notSmokedDates: [] };
+        }
+
+        const [smokeLogs, nonSmokeLogs] = await Promise.all([
+            prisma.smokeLogs.findMany({
+                where: { userId: userId },
+                select: { timestamp: true },
+            }),
+            prisma.nonSmokeLogs.findMany({
+                where: { userId: userId },
+                select: { timestamp: true },
+            }),
+        ]);
+
+        return {
+            smokedDates: smokeLogs.map((log) => log.timestamp.toISOString()),
+            notSmokedDates: nonSmokeLogs.map((log) => log.timestamp.toISOString()),
+        };
+    } catch (error) {
+        console.error("Error in getSmokeHistory", error);
+        return { smokedDates: [], notSmokedDates: [] };
+    }
+}
