@@ -19,13 +19,17 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { updateLifeExpectancy } from "@/actions/llm.actions";
+import { backfillHistoricalSmokeLogs } from "@/actions/smoke.action";
+import { MultiStepLoader } from "./ui/multi-step-loader";
 
 export default function Form() {
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState<Date | undefined>(undefined);
     const [cost, setCost] = useState("");
     const [dailyAvg, setDailyAvg] = useState("");
-    const [duration, setDuration] = useState("");
+    const [durationYears, setDurationYears] = useState("");
+    const [durationMonths, setDurationMonths] = useState("");
+    const [durationDays, setDurationDays] = useState("");
     const [location, setLocation] = useState("");
     const [physicalActivity, setPhysicalActivity] = useState("");
     const [jobHours, setJobHours] = useState("");
@@ -35,16 +39,26 @@ export default function Form() {
     const [isPosting, setIsPosting] = useState(false);
     const router = useRouter();
 
+    // Calculate total duration in years as a float
+    const calculateDuration = (): number => {
+        const years = Number(durationYears) || 0;
+        const months = Number(durationMonths) || 0;
+        const days = Number(durationDays) || 0;
+
+        // Convert everything to years: years + (months/12) + (days/365)
+        return years + (months / 12) + (days / 365);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!date || !cost || !dailyAvg || !duration) return;
+        if (!date || !cost || !dailyAvg || (!durationYears && !durationMonths && !durationDays)) return;
 
         setIsPosting(true);
         console.log("Date", date);
 
         const costNum = Number(cost);
         const dailyAvgNum = Number(dailyAvg);
-        const durationNum = Number(duration);
+        const durationNum = calculateDuration();
         const jobHoursNum = Number(jobHours);
 
         try {
@@ -76,7 +90,10 @@ export default function Form() {
                 sleepQuality: sleepQuality
             });
 
-            if (result1?.success && result2?.success) {
+            // Backfill historical smoke logs based on duration
+            const result3 = await backfillHistoricalSmokeLogs(durationNum, dailyAvgNum);
+
+            if (result1?.success && result2?.success && result3?.success) {
                 setIsPosting(false);
                 toast.success("User data updated successfully");
                 router.push("/dashboard");
@@ -91,6 +108,7 @@ export default function Form() {
 
     return (
         <div className="w-full max-w-md">
+            <MultiStepLoader isLoading={isPosting} />
             <form>
                 <FieldGroup>
                     <FieldSet>
@@ -150,13 +168,96 @@ export default function Form() {
 
                         <Field>
                             <FieldLabel htmlFor="duration">You have been smoking since</FieldLabel>
-                            <Input
-                                id="duration"
-                                required
-                                onChange={(e) => setDuration(e.target.value)}
-                                disabled={isPosting}
-                            />
+                            <div className="flex gap-2 items-center">
+                                {/* Years Dropdown */}
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-32 justify-between font-normal"
+                                            disabled={isPosting}
+                                        >
+                                            {durationYears || "0"} Years
+                                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-32 max-h-64 overflow-y-auto">
+                                        <DropdownMenuLabel>Years</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuRadioGroup
+                                            value={durationYears}
+                                            onValueChange={setDurationYears}
+                                        >
+                                            {Array.from({ length: 51 }, (_, i) => (
+                                                <DropdownMenuRadioItem key={i} value={i.toString()}>
+                                                    {i}
+                                                </DropdownMenuRadioItem>
+                                            ))}
+                                        </DropdownMenuRadioGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+
+                                {/* Months Dropdown */}
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-32 justify-between font-normal"
+                                            disabled={isPosting}
+                                        >
+                                            {durationMonths || "0"} Months
+                                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-32 max-h-64 overflow-y-auto">
+                                        <DropdownMenuLabel>Months</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuRadioGroup
+                                            value={durationMonths}
+                                            onValueChange={setDurationMonths}
+                                        >
+                                            {Array.from({ length: 12 }, (_, i) => (
+                                                <DropdownMenuRadioItem key={i} value={i.toString()}>
+                                                    {i}
+                                                </DropdownMenuRadioItem>
+                                            ))}
+                                        </DropdownMenuRadioGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+
+                                {/* Days Dropdown */}
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-32 justify-between font-normal"
+                                            disabled={isPosting}
+                                        >
+                                            {durationDays || "0"} Days
+                                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-32 max-h-64 overflow-y-auto">
+                                        <DropdownMenuLabel>Days</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuRadioGroup
+                                            value={durationDays}
+                                            onValueChange={setDurationDays}
+                                        >
+                                            {Array.from({ length: 31 }, (_, i) => (
+                                                <DropdownMenuRadioItem key={i} value={i.toString()}>
+                                                    {i}
+                                                </DropdownMenuRadioItem>
+                                            ))}
+                                        </DropdownMenuRadioGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
                         </Field>
+
 
                         <Field>
                             <FieldLabel htmlFor="location">Location</FieldLabel>
