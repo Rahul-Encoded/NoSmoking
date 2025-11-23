@@ -43,12 +43,10 @@ model User {
 }
 
 model SmokeLogs {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  timestamp      DateTime @default(now())
-  penaltyMinutes Int      @default(11)
-  costSpent      Int
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  timestamp DateTime @default(now())
 }
 
 model HabitState {
